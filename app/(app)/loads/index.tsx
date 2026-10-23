@@ -26,7 +26,8 @@ export default function LoadsScreen() {
     async (isRefresh = false) => {
       if (isRefresh) setRefreshing(true);
       try {
-        const result = await loadsApi.list(undefined, status || undefined);
+        // Load board is a demo directory — public, no token needed.
+        const result = await loadsApi.list(status || undefined);
         setLoads(result?.loads ?? []);
         setError(null);
       } catch (err: any) {

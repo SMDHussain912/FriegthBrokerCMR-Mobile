@@ -14,7 +14,7 @@ interface AuthContextValue {
   token: string | null;
   isLoading: boolean;
   login: (email: string, password: string) => Promise<void>;
-  register: (name: string, email: string, password: string, role: string) => Promise<void>;
+  register: (name: string, email: string, password: string) => Promise<void>;
   logout: () => Promise<void>;
 }
 
@@ -39,11 +39,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         setToken(stored);
         setUser(result?.user ?? null);
       } catch (error) {
-        // Expired or invalid token — clear it and fall back to the login screen.
-        if (!(error instanceof ApiError)) {
-          console.warn("[auth] Failed to restore session", error);
+        // Distinguish a server-reported invalid/expired token from a transient
+        // network failure. Only the former clears the stored session.
+        if (error instanceof ApiError && error.status >= 400 && error.status < 500) {
+          await AsyncStorage.removeItem(TOKEN_KEY);
+        } else {
+          console.warn("[auth] Session restore failed (transient/none server-side), keeping token.", error);
         }
-        await AsyncStorage.removeItem(TOKEN_KEY);
       } finally {
         if (!cancelled) setIsLoading(false);
       }
@@ -69,8 +71,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   );
 
   const register = useCallback(
-    async (name: string, email: string, password: string, role: string) => {
-      const result = await authApi.register(name, email, password, role);
+    async (name: string, email: string, password: string) => {
+      // Server always enforces broker role; the client does not transmit a role.
+      const result = await authApi.register(name, email, password);
       await persist(result.token, result.user);
     },
     [persist]

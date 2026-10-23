@@ -17,7 +17,7 @@ export default function CarriersScreen() {
     async (isRefresh = false) => {
       if (isRefresh) setRefreshing(true);
       try {
-        const result = await carriersApi.list(undefined, query || undefined);
+        const result = await carriersApi.list(query || undefined);
         setCarriers(result?.carriers ?? []);
         setError(null);
       } catch (err: any) {

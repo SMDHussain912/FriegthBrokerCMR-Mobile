@@ -4,11 +4,9 @@ import { KeyboardAvoidingView, Platform, Pressable, ScrollView, Text, TextInput,
 import { useAuth } from "@/components/AuthContext";
 import { styles } from "@/components/ui";
 
-const ROLES = [
-  { value: "broker", label: "Broker" },
-  { value: "compliance_officer", label: "Compliance Officer" },
-  { value: "admin", label: "Admin" },
-];
+/** Public registration always creates a plain broker account. Privileged
+ * roles belong to a separate administrative flow and are never selected
+ * here. */
 
 /**
  * Account creation. Mirrors the web signup flow: name, email, password
@@ -21,7 +19,6 @@ export default function SignupScreen() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [role, setRole] = useState("broker");
   const [error, setError] = useState<string | null>(null);
   const [pending, setPending] = useState(false);
 
@@ -44,7 +41,8 @@ export default function SignupScreen() {
 
     setPending(true);
     try {
-      await register(name.trim(), email.trim(), password, role);
+      // Server always enforces broker role; the client does not transmit a role.
+      await register(name.trim(), email.trim(), password);
       router.replace("/(app)");
     } catch (err: any) {
       setError(err?.message || "Could not create your account.");
@@ -106,39 +104,6 @@ export default function SignupScreen() {
           secureTextEntry
           textContentType="password"
         />
-
-        <Text style={styles.label}>Role</Text>
-        <View style={{ flexDirection: "row", flexWrap: "wrap", gap: 8, marginTop: 4 }}>
-          {ROLES.map((option) => {
-            const selected = role === option.value;
-            return (
-              <Pressable
-                key={option.value}
-                onPress={() => setRole(option.value)}
-                accessibilityRole="radio"
-                accessibilityState={{ selected }}
-                style={{
-                  borderWidth: 1,
-                  borderColor: selected ? "#3b82f6" : "#25334f",
-                  backgroundColor: selected ? "#132444" : "#0e1628",
-                  borderRadius: 999,
-                  paddingHorizontal: 14,
-                  paddingVertical: 8,
-                }}
-              >
-                <Text
-                  style={{
-                    color: selected ? "#e6edf8" : "#9fb0c9",
-                    fontSize: 13,
-                    fontWeight: selected ? "600" : "400",
-                  }}
-                >
-                  {option.label}
-                </Text>
-              </Pressable>
-            );
-          })}
-        </View>
 
         <Pressable
           style={[styles.primaryButton, pending ? styles.primaryButtonDisabled : null]}

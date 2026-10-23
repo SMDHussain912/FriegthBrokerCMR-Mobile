@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
-import { Link, useFocusEffect } from "expo-router";
+import { Link, useFocusEffect, useRouter } from "expo-router";
 import { ActivityIndicator, Pressable, RefreshControl, ScrollView, Text, View } from "react-native";
 import { useAuth } from "@/components/AuthContext";
 import { loadsApi, type Load } from "@/components/api";
@@ -10,7 +10,15 @@ import { StatusBadge, styles } from "@/components/ui";
  */
 export default function DashboardScreen() {
   const { user, logout } = useAuth();
+  const router = useRouter();
   const [loads, setLoads] = useState<Load[]>([]);
+
+  // If the session is cleared (logout / expired token), return to sign-in.
+  useEffect(() => {
+    if (!user) {
+      router.replace("/(auth)/login");
+    }
+  }, [user, router]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -18,7 +26,8 @@ export default function DashboardScreen() {
   const loadData = useCallback(async (isRefresh = false) => {
     if (isRefresh) setRefreshing(true);
     try {
-      const result = await loadsApi.list(undefined);
+      // Demo load board is public; no token needed for listing.
+      const result = await loadsApi.list();
       setLoads(result?.loads ?? []);
       setError(null);
     } catch (err: any) {

@@ -135,31 +135,34 @@ export const authApi = {
     apiFetch("/api/auth/login", {
       init: { method: "POST", body: JSON.stringify({ email, password }) },
     }),
-  register: (name: string, email: string, password: string, role: string) =>
+  register: (name: string, email: string, password: string) =>
     apiFetch("/api/auth/register", {
-      init: { method: "POST", body: JSON.stringify({ name, email, password, role }) },
+      init: { method: "POST", body: JSON.stringify({ name, email, password }) },
     }),
   me: (token: string) => apiFetch("/api/auth/me", { token }),
 };
 
 export const loadsApi = {
-  list: (token?: string | null, status?: string) => {
+  // Demo directory is public (no token required). Protected routes (load
+  // detail, assignment, creation/editing) are handled separately below.
+  list: (status?: string) => {
     const query = status ? `?status=${encodeURIComponent(status)}` : "";
-    return apiFetch(`/api/loads${query}`, { token });
+    return apiFetch(`/api/loads${query}`);
   },
-  get: (id: string, token?: string | null) =>
+  get: (id: string, token: string) =>
     apiFetch(`/api/loads/${encodeURIComponent(id)}`, { token }),
   create: (load: Partial<Load>, token: string) =>
     apiFetch("/api/loads", {
       token,
       init: { method: "POST", body: JSON.stringify(load) },
     }),
-  assign: (loadId: string, carrierId: string, actorRole: string, token: string) =>
+  // Assignment contract (backend /:id/assign accepts { carrierId, overrideReason?, allowOverride }):
+  // identity + role come from the verified JWT, never from a client role field.
+  assign: (loadId: string, carrierId: string, overrideReason?: string, allowOverride?: boolean) =>
     apiFetch(`/api/loads/${encodeURIComponent(loadId)}/assign`, {
-      token,
       init: {
         method: "POST",
-        body: JSON.stringify({ carrierId, actorRole }),
+        body: JSON.stringify({ carrierId, overrideReason, allowOverride }),
       },
     }),
   assignment: (loadId: string, token: string) =>
@@ -167,9 +170,10 @@ export const loadsApi = {
 };
 
 export const carriersApi = {
-  list: (token?: string | null, query?: string) => {
+  // Demo carrier directory is public (no token required).
+  list: (query?: string) => {
     const search = query ? `?query=${encodeURIComponent(query)}` : "";
-    return apiFetch(`/api/carriers${search}`, { token });
+    return apiFetch(`/api/carriers${search}`);
   },
   get: (id: string, token: string) =>
     apiFetch(`/api/carriers/${encodeURIComponent(id)}`, { token }),

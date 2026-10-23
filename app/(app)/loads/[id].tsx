@@ -11,7 +11,10 @@ import { DataPoint, StatusBadge, styles } from "@/components/ui";
  * server's failure reason.
  */
 export default function LoadDetailScreen() {
-  const { id } = useLocalSearchParams<{ id: string }>();
+  // expo-router returns string | null for path params; the `/:id` route
+  // guarantees a non-null value at runtime.
+  const { id } = useLocalSearchParams() as { id: string };
+  const idStr: string = id as unknown as string;
   const router = useRouter();
   const { token, user } = useAuth();
 
@@ -24,9 +27,9 @@ export default function LoadDetailScreen() {
   const [success, setSuccess] = useState<string | null>(null);
 
   const fetchLoad = useCallback(async () => {
-    if (!id) return;
+    if (!idStr || !token) return;
     try {
-      const result = await loadsApi.get(String(id), token);
+      const result = await loadsApi.get(idStr, token);
       setLoad(result?.load ?? null);
       setError(null);
     } catch (err: any) {
@@ -34,7 +37,7 @@ export default function LoadDetailScreen() {
     } finally {
       setLoading(false);
     }
-  }, [id, token]);
+  }, [idStr, token]);
 
   useEffect(() => {
     fetchLoad();
@@ -44,7 +47,7 @@ export default function LoadDetailScreen() {
     let cancelled = false;
     (async () => {
       try {
-        const result = await carriersApi.list(token);
+        const result = await carriersApi.list();
         if (!cancelled) setCarriers(result?.carriers ?? []);
       } catch {
         // The carrier picker is optional; the load view still works without it.
@@ -61,11 +64,11 @@ export default function LoadDetailScreen() {
     setError(null);
     setSuccess(null);
     try {
+      // Backend /loads/:id/assign derives actor identity + role from the JWT
+      // and expects { carrierId, overrideReason?, allowOverride? } only.
       const result = await loadsApi.assign(
         load._id,
-        selectedCarrierId,
-        user?.role ?? "broker",
-        token
+        selectedCarrierId
       );
       const name = result?.assignment?.carrierName ?? "Carrier";
       setSuccess(`${name} assigned to ${load.loadNumber}.`);
