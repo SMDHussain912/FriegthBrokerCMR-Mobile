@@ -12,12 +12,12 @@
         "buildType": "apk"
       },
       "env": {
-        "EXPO_PUBLIC_BACKEND_API_URL": "https://freightbroker-backend.onrender.com"
+        "EXPO_PUBLIC_BACKEND_API_URL": "https://friegthbrokercmr-backend.onrender.com"
       }
     },
     "production": {
       "env": {
-        "EXPO_PUBLIC_BACKEND_API_URL": "https://freightbroker-backend.onrender.com"
+        "EXPO_PUBLIC_BACKEND_API_URL": "https://friegthbrokercmr-backend.onrender.com"
       }
     }
   },

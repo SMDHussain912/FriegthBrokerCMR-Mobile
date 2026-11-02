@@ -13,7 +13,9 @@
       "resizeMode": "contain",
       "backgroundColor": "#05080f"
     },
-    "assetBundlePatterns": ["**/*"],
+    "assetBundlePatterns": [
+      "**/*"
+    ],
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.rico.freightbroker"
@@ -35,6 +37,13 @@
     ],
     "experiments": {
       "typedRoutes": true
-    }
+    },
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "0753a98d-acb7-4b40-9de5-32bc0fdd2093"
+      }
+    },
+    "owner": "unitechorganization"
   }
 }
