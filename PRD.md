@@ -2,7 +2,8 @@
 
 **Status:** Working product baseline; implementation status must be verified in code  
 **Product:** Multi-tenant freight brokerage operations platform  
-**Mobile:** Expo SDK 54, React Native, Expo Router, TypeScript  
+**Target mobile stack:** Expo SDK 58, React Native 0.88, React 19.3, Expo Router, TypeScript  
+**Current repository baseline:** package.json currently declares Expo SDK 54 / React Native 0.81.4 / React 19.1.0; SDK 58 migration is required  
 **API:** Node.js/Express + MongoDB
 
 ## 1. Product vision
@@ -42,13 +43,13 @@ Company owner/admin, broker/dispatcher, compliance officer, finance user and rea
 ## 6. Business and security rules
 - All business decisions, eligibility checks and state transitions come from the backend.
 - Tenant context must be tied to authenticated membership.
-- Tokens must be stored only through the approved secure-storage strategy; current AsyncStorage JWT persistence must be reviewed and migrated to secure storage before production release.
+- Tokens must be stored only through the approved secure-storage strategy; current AsyncStorage JWT persistence must be migrated to secure storage before production release.
 - Logout and session revocation must clear local session material.
 - Offline mode must not pretend an unconfirmed mutation succeeded.
 - External compliance states distinguish verified, pending, stale, unavailable and failed.
 
 ## 7. Non-functional requirements
-Performance: efficient lists, optimized images and limited background work. Reliability: request timeouts, safe retry rules and clear offline messaging. Security: secure token storage, no secrets in Expo public variables, minimal local data retention. Accessibility: screen-reader labels, adequate touch targets and scalable text. Compatibility: documented Expo SDK and native build versions.
+Performance: efficient lists, optimized images and limited background work. Reliability: request timeouts, safe retry rules and clear offline messaging. Security: secure token storage, no secrets in Expo public variables, minimal local data retention. Accessibility: screen-reader labels, adequate touch targets and scalable text. Compatibility: use Expo SDK 58-compatible package versions, React Native 0.88 and React 19.3; verify the complete dependency matrix using Expo's installer and doctor before release.
 
 ## 8. Integrations and staged scope
 Push notifications, camera/document capture, GPS/ELD, load-board, insurance verification and offline synchronization require approved provider/configuration, permissions, privacy review and acceptance tests. Do not ship fake provider responses.
