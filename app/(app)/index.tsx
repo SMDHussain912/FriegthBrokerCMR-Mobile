@@ -9,7 +9,7 @@ import { StatusBadge, styles } from "@/components/ui";
  * Dashboard — a quick read on the load board plus shortcuts to the main flows.
  */
 export default function DashboardScreen() {
-  const { user, logout } = useAuth();
+  const { user, logout, token } = useAuth();
   const router = useRouter();
   const [loads, setLoads] = useState<Load[]>([]);
 
@@ -27,7 +27,7 @@ export default function DashboardScreen() {
     if (isRefresh) setRefreshing(true);
     try {
       // Demo load board is public; no token needed for listing.
-      const result = await loadsApi.list();
+      const result = await loadsApi.list(undefined, token);
       setLoads(result?.loads ?? []);
       setError(null);
     } catch (err: any) {
