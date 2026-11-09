@@ -1,4 +1,5 @@
 import { useCallback, useState } from "react";
+import { useAuth } from "@/components/AuthContext";
 import { Link, useFocusEffect } from "expo-router";
 import { ActivityIndicator, FlatList, Pressable, RefreshControl, Text, View } from "react-native";
 import { loadsApi, type Load } from "@/components/api";
@@ -16,6 +17,7 @@ const FILTERS = [
  * Load board — the full list of loads with status filtering.
  */
 export default function LoadsScreen() {
+  const { token } = useAuth();
   const [loads, setLoads] = useState<Load[]>([]);
   const [status, setStatus] = useState("");
   const [loading, setLoading] = useState(true);
@@ -27,7 +29,7 @@ export default function LoadsScreen() {
       if (isRefresh) setRefreshing(true);
       try {
         // Load board is a demo directory — public, no token needed.
-        const result = await loadsApi.list(status || undefined);
+        const result = await loadsApi.list(status || undefined, token);
         setLoads(result?.loads ?? []);
         setError(null);
       } catch (err: any) {
