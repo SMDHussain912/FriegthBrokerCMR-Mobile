@@ -68,7 +68,8 @@ export default function LoadDetailScreen() {
       // and expects { carrierId, overrideReason?, allowOverride? } only.
       const result = await loadsApi.assign(
         load._id,
-        selectedCarrierId
+        selectedCarrierId,
+        token
       );
       const name = result?.assignment?.carrierName ?? "Carrier";
       setSuccess(`${name} assigned to ${load.loadNumber}.`);
