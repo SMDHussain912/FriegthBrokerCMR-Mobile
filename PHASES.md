@@ -2,10 +2,10 @@
 
 This plan aligns with the web and backend plans. Mobile work must consume stable API contracts; backend authorization remains authoritative.
 
-## Phase 0 — App and contract audit
-**Work:** inventory routes/screens, API helpers, auth/session behavior, Expo config, permissions, CI and EAS profiles. Compare each screen with live backend contracts.  
-**Outputs:** screen inventory, API gap list, device compatibility matrix, security risk list and baseline typecheck/export report.  
-**Exit gate:** existing behavior and unsupported workflows are documented.
+## Phase 0 — Repository baseline and SDK 58 migration
+**Work:** inventory routes/screens, API helpers, auth/session behavior, Expo config, permissions, CI and EAS profiles. Current package.json uses Expo SDK 54, React Native 0.81.4 and React 19.1.0; upgrade to SDK 58 / React Native 0.88 / React 19.3.0. Align dependencies, review breaking changes and regenerate/update native projects as required.  
+**Outputs:** screen inventory, API gap list, dependency compatibility report, completed SDK 58 migration, updated lockfile, Expo Doctor report, device compatibility matrix, security risk list and baseline typecheck/export report.  
+**Exit gate:** SDK 58 dependency alignment is complete; Expo Doctor, typecheck, lint and export pass; development build launches on a real Android device; existing screens and unsupported workflows are documented.
 
 ## Phase 1 — Authentication and tenant foundation
 **Work:** login/register, session restore/expiry/logout, secure token storage, tenant context, role-aware navigation and account-switch cleanup.  
@@ -35,7 +35,7 @@ This plan aligns with the web and backend plans. Mobile work must consume stable
 ## Phase 6 — Device, security and release hardening
 **Work:** Android/iOS compatibility as supported, secure storage review, permission/privacy review, performance, crash handling and EAS configuration.  
 **Outputs:** device test matrix, security checklist, EAS build artifacts, release notes and rollback/remote-update policy.  
-**Exit gate:** real-device smoke tests, typecheck, Expo export and production-profile build pass.
+**Exit gate:** real-device smoke tests, typecheck, Expo export and production-profile build pass on SDK 58.
 
 ## Phase 7 — Release and operations
 **Work:** staged rollout, crash/usage monitoring, feedback triage and hotfix process.  
@@ -45,6 +45,7 @@ This plan aligns with the web and backend plans. Mobile work must consume stable
 ## Required phase report
 - Screens and user journeys delivered.
 - API contracts consumed and backend dependencies.
+- SDK and dependency versions, Expo Doctor results and migration notes.
 - Secure storage and permission impact.
 - Device/OS versions tested.
 - Tests and exact results.
